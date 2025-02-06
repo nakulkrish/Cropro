@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Crop Recommendation - CroPro</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Baskervville+SC&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display&display=swap');
+        </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <a href="/home">CroPro</a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/crop-recommendation">Crop Recommendation</a></li>
+            <li><a href="/irrigation">Irrigation</a></li>
+            <li><a href="/disease-prediction">Fertilizer Sugesstions</a></li>
+            <li><a href="/articles">Articles</a></li>
+            <li><a href="/logout" class="logout-link">Logout</a></li> <!-- Logout option -->
+
+        </ul>
+    </nav>
+    <h1>Crop Recommendation</h1>
+    <p style="text-align: center; padding:10px 20px 20px 20px;">Find the most suitable crops to plant based on your region and soil type.</p>
+
+    <!-- Content -->
+        
+<div class="crop-rec-wrapper">
+        <form class="crop-rec" action="/crop-recommendation" method="post">
+            <label for="N">Nitrogen (N):</label>
+            <input type="text" id="N" name="N" required>
+            
+            <label for="P">Phosphorus (P):</label>
+            <input type="text" id="P" name="P" required>
+            
+            <label for="K">Potassium (K):</label>
+            <input type="text" id="K" name="K" required>
+            
+            <label for="temperature">Temperature:</label>
+            <input type="text" id="temperature" name="temperature" required>
+            
+            <label for="humidity">Humidity:</label>
+            <input type="text" id="humidity" name="humidity" required>
+            
+            <label for="ph">pH:</label>
+            <input type="text" id="ph" name="ph" required>
+            
+            <label for="rainfall">Rainfall:</label>
+            <input type="text" id="rainfall" name="rainfall" required>
+
+            <input type="submit" value="Predict">
+        </form>
+
+        {% if prediction %}
+            <div class="result">
+                <h2>Prediction Result</h2>
+                <p>The recommended crop for you is: <strong style="font-size: 50px;">{{ prediction }}</strong></p>
+            </div>
+        {% endif %}
+    </div>
+    <img class="bg" src="{{ url_for('static', filename='images/croprecimg.jpeg') }}" alt="">
+
+</body>
+</html>

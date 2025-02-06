@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Irrigation - CroPro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Baskervville+SC&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display&display=swap');
+        </style>
+    <style>
+        .content-wrapper {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.6);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-height: 90vh; /* Set max height for the grid */
+            overflow-y: auto; /* Enable vertical scrolling */
+        }
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #f1f1f1;
+            margin-right: 5px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .tab:hover {
+            background-color:#274668;
+            color: white;
+        }
+        .tab.active {
+            background-color: #274668;
+            color: white;
+        }
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #f9f9f9;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #15212d;
+            color: white;
+        }
+        .irrigation-level {
+            display: inline-block;
+            padding: 10px;
+            border-radius: 5px;
+            color: white;
+        }
+        .high { background-color: red; }
+        .medium { background-color: orange; }
+        .low { background-color: green; }
+        
+        /* Today's Weather Section */
+        .today-weather {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .weather-info {
+            text-align: left;
+            margin-right: 20px;
+            font-family: "PT Serif", serif;
+            font-style: normal;
+        }
+        
+        /* Temperature Classes */
+        .temp-hot {
+            color: red;
+        }
+        .temp-normal {
+            color: green;
+        }
+        
+        /* Precipitation Probability Classes */
+        .precip-high {
+            color: blue;
+        }
+        .precip-low {
+            color: lightblue;
+        }
+    
+        /* Graph Container */
+        .graph-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .graph-container img {
+            max-width: 1000px;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        p{
+            padding: 10px;
+        }
+        h2{
+            padding: 10px;
+        }
+    </style>
+    
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <a href="/home">CroPro</a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/crop-recommendation">Crop Recommendation</a></li>
+            <li><a href="/irrigation">Irrigation</a></li>
+            <li><a href="/disease-prediction">Fertilizer Sugesstions</a></li>
+            <li><a href="/articles">Articles</a></li>
+            <li><a href="/logout" class="logout-link">Logout</a></li>
+        </ul>
+    </nav>
+
+    <!-- Background Image -->
+    <img class="bg" src="{{ url_for('static', filename='images/irrigationimg.jpeg') }}" alt="">
+
+    <!-- Content Wrapper -->
+    <div class="content-wrapper">
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('present')">Irrigation Present</div>
+            <div class="tab" onclick="showTab('past')">Irrigation Past</div>
+        </div>
+
+        <!-- Irrigation Present Content -->
+        <div id="present" class="tab-content">
+            <h1 style="padding-top: 0;">Irrigation - Present</h1>
+            <p>Learn about efficient irrigation techniques to maximize water use and crop yield.</p>
+
+            <!-- Today's Weather and Irrigation Recommendation -->
+            <h2 style="font-family: 'PT Serif', serif;">Today's Weather</h2>
+            <div class="today-weather">
+                <div class="weather-info">
+                    {% if today_weather is not none %}
+                        <p>Location: <strong>Chengalpattu</strong> </p>
+                        <p>Date: <strong>{{ today_weather['datetime'].strftime('%Y-%m-%d') }}</strong> </p>
+                        <p>Current Temperature: 
+                            <span class="{{ 'temp-hot' if today_weather['temp'] > 25 else 'temp-normal' }}"><strong>
+                                {{ today_weather['temp'] }} °C
+                            </strong>
+                            </span>
+                        </p>
+                        <p>Conditions: <strong>{{ today_weather['conditions'] }}</strong></p>
+                        <p>Wind Speed: <strong>{{ wind_speed }} km/h</strong></p> <!-- Display wind speed -->
+                        <p>Humidity: <strong>{{ humidity }}%</strong></p>        <!-- Display humidity -->
+                        <p>Precipitation Probability: 
+                            <span class="{{ 'precip-high' if precip_prob > 50 else 'precip-low' }}"><strong>
+                                {{ precip_prob }}%
+                            </strong>
+                        </span>
+                        </p>
+
+                        <h3 style="padding: 10px;">Irrigation Recommendation</h3>
+                        <div class="irrigation-level {{ irrigation_amount.lower() }}">
+                            Amount of water to irrigate: <span style="font-size: x-large; padding: 10px;"><strong>{{ irrigation_amount }}</strong></span> 
+                        </div>
+                    {% else %}
+                        <p>No data available for today.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Irrigation Past Content -->
+        <div id="past" class="tab-content" style="display: none;">
+            <h1>Irrigation - Past</h1>
+            <p>Explore the past weather data and irrigation patterns.</p>
+
+            <!-- Weather Data -->
+            <h2>Past 7 Days Weather Data</h2>
+            <table>
+                <tr>
+                    <th>Date</th>
+                    <th>Max Temp (°C)</th>
+                    <th>Min Temp (°C)</th>
+                    <th>Conditions</th>
+                </tr>
+                {% for day in past_days %}
+                    <tr>
+                        <td>{{ day[1]['datetime'].strftime('%Y-%m-%d')}}</td>
+                        <td>{{ day[1]['tempmax'] }}</td>
+                        <td>{{ day[1]['tempmin'] }}</td>
+                        <td>{{ day[1]['conditions'] }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+
+            <!-- Graph Container -->
+            <div class="graph-container">
+                {% if plot_path %}
+                    <img src="{{ plot_path }}" alt="Weather Plot">
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tab) {
+            // Hide all content
+            document.getElementById('present').style.display = 'none';
+            document.getElementById('past').style.display = 'none';
+
+            // Remove active class from all tabs
+            var tabs = document.getElementsByClassName('tab');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+
+            // Show the selected tab and add active class to the clicked tab
+            document.getElementById(tab).style.display = 'block';
+            event.currentTarget.classList.add('active');
+        }
+    </script>
+</body>
+</html>

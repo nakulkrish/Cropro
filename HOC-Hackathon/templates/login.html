@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Login</title>
+</head>
+<body>
+    <div class="login-wrapper">
+        <h1 class="login-header" >CroPro</h1>
+        <h3 class="tagline" style="padding-top: 10px;">TURN SOIL INTO SUCCESS</h3>
+        <div class="login-box">
+            <h2>Login</h2>
+            <form method="POST" action="/login">
+                <label for="mobile_number">Mobile Number:</label>
+                <input type="tel" id="mobile_number" name="mobile_number" pattern="[0-9]{10}" placeholder="Enter 10-digit mobile number" required title="Please enter exactly 10 digits"><br><br>
+
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required placeholder="Enter your password"><br><br>
+
+                <button type="submit">Login</button>
+            </form>
+            <p>Don't have an account? <a href="/signup">Sign up here</a></p>
+        </div>
+        <img class="bg" src="{{ url_for('static', filename='images/picture1.jpeg') }}" alt="">
+    </div>
+</body>
+</html>

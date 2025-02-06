@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Articles - CroPro</title>
+</head>
+<body>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Baskervville+SC&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display&display=swap');
+        </style>
+    <!-- Navbar -->
+    <nav class="navbar"> <!-- Sticky navbar -->
+        <div class="logo">
+            <a href="/home">CroPro</a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/crop-recommendation">Crop Recommendation</a></li>
+            <li><a href="/irrigation">Irrigation</a></li>
+            <li><a href="/disease-prediction">Fertilizer Sugesstions</a></li>
+            <li><a class="active" href="/articles">Articles</a></li> <!-- Active link highlighting -->
+            <li><a href="/logout" class="logout-link">Logout</a></li> <!-- Logout option -->
+        </ul>
+    </nav>
+    
+    <!-- Background Image -->
+    <img class="bg" src="{{ url_for('static', filename='images/articleimg.jpeg') }}" alt="">
+
+    <!-- Content -->
+    <div class="content-wrapper">
+        <h1 style="padding-top: 0;">Articles on Agriculture and Farming Technologies</h1>
+
+        <!-- Search Bar -->
+        <form method="POST" action="/articles" class="search-bar">
+            <input type="text" name="search_query" placeholder="Search for topics..." required>
+            <button class="button-33" role="button" type="submit">Search</button>
+        </form>
+
+        <!-- Article Tiles Container -->
+        <div class="article-grid">
+            {% for article in articles %}
+            <div class="article-tile">
+                <h2><a href="{{ article.url }}" target="_blank">{{ article.title }}</a></h2>
+                <p>{{ article.description }}</p>
+                <p><em>Published at: {{ article.publishedAt }}</em></p>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if not articles %}
+            <p class="no-article">No articles found related to agriculture or farming technologies.</p>
+        {% endif %}
+    </div>
+
+</body>
+</html>
